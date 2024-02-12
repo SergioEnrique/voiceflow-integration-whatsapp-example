@@ -409,6 +409,15 @@ async function interact(user_id, request, phone_number_id, user_name) {
 }
 
 async function sendMessage(messages, phone_number_id, from) {
+  if(from === "5215553499792"){
+    console.log("Es numero de Enrique");
+    from = "525553499792";
+  }
+  else if(from === "5217298746246"){
+    console.log("Es numero de Lalis");
+    from = "527298746246";
+  }
+
   const timeoutPerKB = 10 // Adjust as needed, 10 milliseconds per kilobyte
   for (let j = 0; j < messages.length; j++) {
     let data
@@ -469,6 +478,7 @@ async function sendMessage(messages, phone_number_id, from) {
     }
     if (!ignore) {
       try {
+        console.log();
         await axios({
           method: 'POST',
           url: `https://graph.facebook.com/${WHATSAPP_VERSION}/${phone_number_id}/messages`,
@@ -495,7 +505,7 @@ async function sendMessage(messages, phone_number_id, from) {
           }
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     }
   }
@@ -571,7 +581,9 @@ async function saveTranscript(username) {
       .then(function (response) {
         console.log('Transcript Saved!')
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err)
+      })
   }
   session = `${VF_VERSION_ID}.${rndID()}`
 }
