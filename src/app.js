@@ -203,15 +203,6 @@ app.get('/webhook', (req, res) => {
 })
 
 async function interact(user_id, request, phone_number_id, user_name) {
-  if(from === "5215553499792"){
-    console.log("Es numero de Enrique");
-    from = "525553499792";
-  }
-  else if(from === "5217298746246"){
-    console.log("Es numero de Lalis");
-    from = "527298746246";
-  }
-
   clearTimeout(noreplyTimeout)
   if (!session) {
     session = `${VF_VERSION_ID}.${rndID()}`
@@ -418,6 +409,15 @@ async function interact(user_id, request, phone_number_id, user_name) {
 }
 
 async function sendMessage(messages, phone_number_id, from) {
+  if(from === "5215553499792"){
+    console.log("Es numero de Enrique");
+    from = "525553499792";
+  }
+  else if(from === "5217298746246"){
+    console.log("Es numero de Lalis");
+    from = "527298746246";
+  }
+  
   const timeoutPerKB = 10 // Adjust as needed, 10 milliseconds per kilobyte
   for (let j = 0; j < messages.length; j++) {
     let data
