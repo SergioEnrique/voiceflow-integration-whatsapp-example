@@ -76,7 +76,7 @@ app.post('/webhook', async (req, res) => {
       } else if (req.body?.entry[0]?.changes[0]?.value?.messages[0]?.audio) {
         if (
           req.body?.entry[0]?.changes[0]?.value?.messages[0]?.audio?.voice ==
-            true &&
+          true &&
           PICOVOICE_API_KEY
         ) {
           let mediaURL = await axios({
@@ -98,7 +98,7 @@ app.post('/webhook', async (req, res) => {
               Authorization: 'Bearer ' + WHATSAPP_TOKEN,
             },
             responseType: 'stream',
-          }).then(function (response) {
+          }).then(function(response) {
             let engineInstance = new Leopard(PICOVOICE_API_KEY)
             const wstream = fs.createWriteStream(rndFileName)
             response.data.pipe(wstream)
@@ -125,7 +125,7 @@ app.post('/webhook', async (req, res) => {
         }
       } else {
         if (
-          req.body.entry[0].changes[0].value.messages[0].interactive.button_reply.id.includes(
+          req.body.entry[0].changes[0].value.messages[0].interactive?.button_reply.id.includes(
             'path-'
           )
         ) {
@@ -203,6 +203,15 @@ app.get('/webhook', (req, res) => {
 })
 
 async function interact(user_id, request, phone_number_id, user_name) {
+  if(from === "5215553499792"){
+    console.log("Es numero de Enrique");
+    from = "525553499792";
+  }
+  else if(from === "5217298746246"){
+    console.log("Es numero de Lalis");
+    from = "527298746246";
+  }
+
   clearTimeout(noreplyTimeout)
   if (!session) {
     session = `${VF_VERSION_ID}.${rndID()}`
@@ -352,7 +361,7 @@ async function interact(user_id, request, phone_number_id, user_name) {
         let link = null
         if (
           response.data[i].payload.buttons[b].request.payload.actions !=
-            undefined &&
+          undefined &&
           response.data[i].payload.buttons[b].request.payload.actions.length > 0
         ) {
           link =
@@ -397,7 +406,7 @@ async function interact(user_id, request, phone_number_id, user_name) {
         buttons: buttons,
       })
     } else if (response.data[i].type == 'no-reply' && isEnding == false) {
-      noreplyTimeout = setTimeout(function () {
+      noreplyTimeout = setTimeout(function() {
         sendNoReply(user_id, request, phone_number_id, user_name)
       }, Number(response.data[i].payload.timeout) * 1000)
     }
@@ -409,15 +418,6 @@ async function interact(user_id, request, phone_number_id, user_name) {
 }
 
 async function sendMessage(messages, phone_number_id, from) {
-  if(from === "5215553499792"){
-    console.log("Es numero de Enrique");
-    from = "525553499792";
-  }
-  else if(from === "5217298746246"){
-    console.log("Es numero de Lalis");
-    from = "527298746246";
-  }
-
   const timeoutPerKB = 10 // Adjust as needed, 10 milliseconds per kilobyte
   for (let j = 0; j < messages.length; j++) {
     let data
@@ -478,7 +478,6 @@ async function sendMessage(messages, phone_number_id, from) {
     }
     if (!ignore) {
       try {
-        console.log();
         await axios({
           method: 'POST',
           url: `https://graph.facebook.com/${WHATSAPP_VERSION}/${phone_number_id}/messages`,
@@ -505,7 +504,7 @@ async function sendMessage(messages, phone_number_id, from) {
           }
         }
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
     }
   }
@@ -524,7 +523,7 @@ async function sendNoReply(user_id, request, phone_number_id, user_name) {
   )
 }
 
-var rndID = function () {
+var rndID = function() {
   // Random Number Generator
   var randomNo = Math.floor(Math.random() * 1000 + 1)
   // get Timestamp
@@ -578,12 +577,10 @@ async function saveTranscript(username) {
         Authorization: process.env.VF_API_KEY,
       },
     })
-      .then(function (response) {
+      .then(function(response) {
         console.log('Transcript Saved!')
       })
-      .catch((err) => {
-        console.log(err)
-      })
+      .catch((err) => console.log(err))
   }
   session = `${VF_VERSION_ID}.${rndID()}`
 }
