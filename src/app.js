@@ -132,12 +132,10 @@ app.post('/webhook', async (req, res) => {
           await interact(
             user_id,
             {
-              type: req.body.entry[0].changes[0].value.messages[0].interactive
-                .button_reply.id,
+              type: req.body.entry[0].changes[0].value.messages[0].interactive?.button_reply.id,
               payload: {
                 label:
-                  req.body.entry[0].changes[0].value.messages[0].interactive
-                    .button_reply.title,
+                  req.body.entry[0].changes[0].value.messages[0].interactive?.button_reply.title,
               },
             },
             phone_number_id,
@@ -150,11 +148,9 @@ app.post('/webhook', async (req, res) => {
               type: 'intent',
               payload: {
                 query:
-                  req.body.entry[0].changes[0].value.messages[0].interactive
-                    .button_reply.title,
+                  req.body.entry[0].changes[0].value.messages[0].interactive?.button_reply.title,
                 intent: {
-                  name: req.body.entry[0].changes[0].value.messages[0]
-                    .interactive.button_reply.id,
+                  name: req.body.entry[0].changes[0].value.messages[0].interactive?.button_reply.id,
                 },
                 entities: [],
               },
