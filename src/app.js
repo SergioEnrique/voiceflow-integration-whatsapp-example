@@ -10,7 +10,8 @@ import webhookSetup from './webhookSetup';
 
 require('dotenv').config();
 
-const app = express().use(bodyParser.json());
+const app = express();
+app.use(bodyParser.json());
 
 app.listen(process.env.PORT || 3000, () => console.log('webhook is listening'));
 
