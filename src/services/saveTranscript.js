@@ -33,7 +33,7 @@ const saveTranscript = async ({ session, resetSession, originalUsername }) => {
       .then(() => {
         console.log('Transcript Saved!');
       })
-      .catch((err) => console.log(err));
+      .catch(() => console.error('Save transcript error'));
   }
   resetSession();
 };

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 export const WHATSAPP_VERSION = process.env.WHATSAPP_VERSION || 'v17.0';
 export const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN || null;
 

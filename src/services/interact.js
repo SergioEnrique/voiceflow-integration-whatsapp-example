@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
+import to from 'await-to-js';
 import axios from 'axios';
 
 import { DM_CONFIG, VF_API_KEY, VF_DM_URL, VF_VERSION_ID } from '../constants';
@@ -26,14 +27,19 @@ async function sendNoReply({ userId, phoneNumberId, userName }) {
   clearTimeout(noreplyTimeout);
   console.log('No reply');
 
-  await interact(
-    userId,
-    {
-      type: 'no-reply',
-    },
-    phoneNumberId,
-    userName
+  const [errSendNoReply] = await to(
+    interact({
+      userId,
+      request: {
+        type: 'no-reply',
+      },
+      phoneNumberId,
+      userName,
+    })
   );
+  if (errSendNoReply) {
+    throw new Error('SendNoReply Error');
+  }
 }
 
 async function interact({ userId, request, phoneNumberId, userName }) {
@@ -43,33 +49,44 @@ async function interact({ userId, request, phoneNumberId, userName }) {
     resetSession();
   }
 
-  await axios({
-    method: 'PATCH',
-    url: `${VF_DM_URL}/state/user/${encodeURI(userId)}/variables`,
-    headers: {
-      Authorization: VF_API_KEY,
-      'Content-Type': 'application/json',
-    },
-    data: {
-      userId,
-      userName,
-    },
-  });
+  const [err] = await to(
+    axios({
+      method: 'PATCH',
+      url: `${VF_DM_URL}/state/user/${encodeURI(userId)}/variables`,
+      headers: {
+        Authorization: VF_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        user_id: userId,
+        user_name: userName,
+      },
+    })
+  );
+  if (err) {
+    console.log(err);
+    throw new Error('Voiceflow patch variables Error');
+  }
 
-  const response = await axios({
-    method: 'POST',
-    url: `${VF_DM_URL}/state/user/${encodeURI(userId)}/interact`,
-    headers: {
-      Authorization: VF_API_KEY,
-      'Content-Type': 'application/json',
-      versionID: VF_VERSION_ID,
-      sessionID: session,
-    },
-    data: {
-      action: request,
-      config: DM_CONFIG,
-    },
-  });
+  const [errInteract, response] = await to(
+    axios({
+      method: 'POST',
+      url: `${VF_DM_URL}/state/user/${encodeURI(userId)}/interact`,
+      headers: {
+        Authorization: VF_API_KEY,
+        'Content-Type': 'application/json',
+        versionID: VF_VERSION_ID,
+        sessionID: session,
+      },
+      data: {
+        action: request,
+        config: DM_CONFIG,
+      },
+    })
+  );
+  if (errInteract) {
+    throw new Error('Voiceflow interaction error');
+  }
 
   let isEnding = response.data.filter(({ type }) => type === 'end');
 
@@ -198,14 +215,15 @@ async function interact({ userId, request, phoneNumberId, userName }) {
       console.log('Es no-reply');
       noreplyTimeout = setTimeout(
         () => {
-          sendNoReply(userId, request, phoneNumberId, userName);
+          sendNoReply({ userId, request, phoneNumberId, userName });
         },
         Number(response.data[i].payload.timeout) * 1000
       );
     }
   }
 
-  await sendMessage(messages, phoneNumberId, userId);
+  const [errSendMessage] = await to(sendMessage({ messages, phoneNumberId, originalFrom: userId }));
+  if (errSendMessage) throw new Error('Send message error');
 
   if (isEnding === true) {
     endSession();

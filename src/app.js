@@ -8,8 +8,6 @@ import express from 'express';
 import webhook from './webhook';
 import webhookSetup from './webhookSetup';
 
-require('dotenv').config();
-
 const app = express();
 app.use(bodyParser.json());
 
@@ -21,6 +19,7 @@ app.get('/', (req, res) => {
     info: 'WhatsApp API v1.1.2 | V⦿iceflow | 2023',
     status: 'healthy',
     error: null,
+    env: process.env.NODE_ENV,
   });
 });
 

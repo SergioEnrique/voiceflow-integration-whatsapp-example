@@ -8,7 +8,9 @@ import axios from 'axios';
 import { WHATSAPP_TOKEN, WHATSAPP_VERSION } from '../constants';
 
 /* eslint-disable no-plusplus */
-const sendMessage = async (messages, phoneNumberId, originalFrom) => {
+const sendMessage = async ({ messages, phoneNumberId, originalFrom }) => {
+  const url = `https://graph.facebook.com/${WHATSAPP_VERSION}/${phoneNumberId}/messages`;
+
   let from = originalFrom;
   if (from === '5215553499792') {
     console.log('----------');
@@ -81,6 +83,7 @@ const sendMessage = async (messages, phoneNumberId, originalFrom) => {
       };
     } else {
       console.log('IGNORE');
+      console.log(JSON.stringify(messages[j], null, 2));
       ignore = true;
     }
     if (!ignore) {
@@ -88,7 +91,7 @@ const sendMessage = async (messages, phoneNumberId, originalFrom) => {
         console.log('Enviando mensaje a facebook api...');
         await axios({
           method: 'POST',
-          url: `https://graph.facebook.com/${WHATSAPP_VERSION}/${phoneNumberId}/messages`,
+          url,
           data,
           headers: {
             'Content-Type': 'application/json',
@@ -111,7 +114,10 @@ const sendMessage = async (messages, phoneNumberId, originalFrom) => {
           }
         }
       } catch (err) {
-        console.log(err);
+        console.log('ERROR: Error al mandar mensaje a facebook api');
+        console.log({ url });
+        console.log(JSON.stringify(data));
+        // console.log(err);
       }
     }
   }
