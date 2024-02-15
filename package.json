@@ -1,8 +1,8 @@
 {
-  "name": "voiceflow-july",
-  "version": "1.0.3",
+  "name": "voiceflow-kuitz",
+  "version": "2.0.0",
   "description": "WhatsApp Webhook for Voiceflow DM API",
-  "main": "app.js",
+  "main": "./dist/app.js",
   "scripts": {
     "dev": "env NODE_ENV=dev nodemon --exec babel-node -- ./src/app.js",
     "start": "node ./dist/app.js",
@@ -13,7 +13,7 @@
     "prettier:fix": "pnpm prettier \"**/*.{js,json}\" --write",
     "format": "pnpm prettier:fix && pnpm lint:fix"
   },
-  "author": "Voiceflow | NiKo",
+  "author": "Voiceflow | NiKo | Valerio",
   "license": "ISC",
   "dependencies": {
     "@picovoice/leopard-node": "^1.2.0",
