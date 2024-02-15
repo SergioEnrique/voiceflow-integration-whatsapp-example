@@ -4,12 +4,23 @@
 import axios from 'axios';
 
 import { DM_CONFIG, VF_API_KEY, VF_DM_URL, VF_VERSION_ID } from '../constants';
-import { truncateString } from '../utils';
+import { rndID, truncateString } from '../utils';
 
 import saveTranscript from './saveTranscript';
 import sendMessage from './sendMessage';
 
 let noreplyTimeout = null;
+
+let session = 0;
+
+const resetSession = () => {
+  session = `${VF_VERSION_ID}.${rndID()}`;
+  return session;
+};
+
+const endSession = () => {
+  session = null;
+};
 
 async function sendNoReply({ userId, phoneNumberId, userName }) {
   clearTimeout(noreplyTimeout);
@@ -23,30 +34,13 @@ async function sendNoReply({ userId, phoneNumberId, userName }) {
     phoneNumberId,
     userName
   );
-
-  await interact(
-    userId,
-    {
-      type: 'no-reply',
-    },
-    phoneNumberId,
-    userName
-  );
 }
 
-async function interact({
-  originalSession,
-  resetSession,
-  userId,
-  request,
-  phoneNumberId,
-  userName,
-}) {
-  let session = originalSession;
-  clearTimeout('noreplyTimeout');
+async function interact({ userId, request, phoneNumberId, userName }) {
+  clearTimeout(noreplyTimeout);
 
   if (!session) {
-    session = resetSession();
+    resetSession();
   }
 
   await axios({
@@ -78,6 +72,7 @@ async function interact({
   });
 
   let isEnding = response.data.filter(({ type }) => type === 'end');
+
   if (isEnding.length > 0) {
     console.log('isEnding');
     isEnding = true;
@@ -209,9 +204,11 @@ async function interact({
       );
     }
   }
+
   await sendMessage(messages, phoneNumberId, userId);
+
   if (isEnding === true) {
-    session = null;
+    endSession();
   }
 }
 

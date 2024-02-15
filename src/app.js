@@ -5,21 +5,12 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 
-import { VF_VERSION_ID } from './constants';
-import { rndID } from './utils';
 import webhook from './webhook';
 import webhookSetup from './webhookSetup';
 
 require('dotenv').config();
 
 const app = express().use(bodyParser.json());
-
-let session = 0;
-
-const resetSession = () => {
-  session = `${VF_VERSION_ID}.${rndID()}`;
-  return session;
-};
 
 app.listen(process.env.PORT || 3000, () => console.log('webhook is listening'));
 
@@ -33,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 // Accepts POST requests at /webhook endpoint
-app.post('/webhook', webhook({ session, resetSession }));
+app.post('/webhook', webhook);
 
 // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
 // info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests
