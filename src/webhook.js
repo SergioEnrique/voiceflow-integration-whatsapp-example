@@ -12,6 +12,7 @@ const webhook = async (req, res) => {
   // info on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
 
   if (req.body.object) {
+    console.log('----- WEBHOOK CALL -----');
     const isNotInteractive = req.body?.entry[0]?.changes[0]?.value?.messages?.length || null;
     if (isNotInteractive) {
       const phoneNumberId = req.body.entry[0].changes[0].value.metadata.phone_number_id;

@@ -13,11 +13,9 @@ const sendMessage = async ({ messages, phoneNumberId, originalFrom }) => {
 
   let from = originalFrom;
   if (from === '5215553499792') {
-    console.log('----------');
     console.log('Enviar a numero de Enrique');
     from = '525553499792';
   } else if (from === '5217298746246') {
-    console.log('----------');
     console.log('Enviar a numero de Lalis');
     from = '527298746246';
   }

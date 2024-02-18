@@ -93,7 +93,7 @@ async function interact({ userId, request, phoneNumberId, userName }) {
   if (isEnding.length > 0) {
     console.log('isEnding');
     isEnding = true;
-    saveTranscript({ session, resetSession, userName });
+    saveTranscript({ session, resetSession, phoneNumber: userId, userName });
   } else {
     isEnding = false;
   }

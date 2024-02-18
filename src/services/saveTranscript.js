@@ -3,13 +3,21 @@ import axios from 'axios';
 
 import { VF_PROJECT_ID, VF_TRANSCRIPT_ICON, VF_VERSION_ID } from '../constants';
 
-const saveTranscript = async ({ session, resetSession, originalUsername }) => {
-  let username = originalUsername;
+const saveTranscript = async ({
+  session,
+  resetSession,
+  phoneNumber,
+  userName: originalUsername,
+}) => {
+  let name = originalUsername;
 
   if (VF_PROJECT_ID) {
-    if (!username || username === '' || username === undefined) {
-      username = 'Anonymous';
+    if (!name || name === '' || name === undefined) {
+      name = 'Anonymous';
     }
+
+    name += `: ${phoneNumber}`;
+
     axios({
       method: 'put',
       url: 'https://api.voiceflow.com/v2/transcripts',
@@ -22,7 +30,7 @@ const saveTranscript = async ({ session, resetSession, originalUsername }) => {
         versionID: VF_VERSION_ID,
         projectID: VF_PROJECT_ID,
         user: {
-          name: username,
+          name,
           image: VF_TRANSCRIPT_ICON,
         },
       },

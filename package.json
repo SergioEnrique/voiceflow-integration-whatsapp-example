@@ -1,12 +1,12 @@
 {
   "name": "voiceflow-kuitz",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "WhatsApp Webhook for Voiceflow DM API",
   "main": "./dist/app.js",
   "scripts": {
     "dev": "env NODE_ENV=dev nodemon --exec babel-node -- ./src/app.js",
     "start": "node ./dist/app.js",
-    "build": "rm -rf ./dist/* && babel -d ./dist ./src && docker build -t voiceflow-july:$(jq -r '.version' package.json) . && docker tag voiceflow-july:$(jq -r '.version' package.json) registry.kuitz.es/voiceflow-july:$(jq -r '.version' package.json) && docker push registry.kuitz.es/voiceflow-july:$(jq -r '.version' package.json)",
+    "build": "rm -rf ./dist/* && babel -d ./dist ./src && docker build -t $(jq -r '.name' package.json):$(jq -r '.version' package.json) . && docker tag $(jq -r '.name' package.json):$(jq -r '.version' package.json) registry.kuitz.es/$(jq -r '.name' package.json):$(jq -r '.version' package.json) && docker push registry.kuitz.es/$(jq -r '.name' package.json):$(jq -r '.version' package.json)",
     "lint": "eslint \"**/*.{js,json}\"",
     "lint:fix": "pnpm lint \"**/*.{js,json}\" --fix",
     "prettier": "prettier \"**/*.{js,json}\" --check",
